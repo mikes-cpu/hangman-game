@@ -65,7 +65,7 @@ var initGame = function () {
 };
 var letterSubmitHandler = function () {
     var input = document.querySelector(".container__letterInput");
-    var inputVal = input.value.toUpperCase();
+    var inputVal = input.value.toUpperCase().trim();
     if (!inputVal || inputVal.length > 1) {
         return alert("Invalid letter!");
     }
@@ -74,7 +74,7 @@ var letterSubmitHandler = function () {
 };
 var wordSubmitHandler = function () {
     var input = document.querySelector(".container__wordInput");
-    var inputVal = input.value.toUpperCase();
+    var inputVal = input.value.toUpperCase().trim();
     checkWord(inputVal);
     document.querySelector(".container__wordInput").value = '';
 };
@@ -121,24 +121,32 @@ var changeHangmanImage = function () {
             break;
     }
 };
-var checkLetter = function (chLetter) {
+var checkLetter = function (chosenLetter) {
     var checkedObjects = [];
     wordObject.forEach(function (object) {
-        if (object.letter === chLetter) {
+        if (object.letter === chosenLetter) {
             object.visable = true;
         }
         checkedObjects.push(object);
     });
     var filtered = wordObject.filter(function (object) {
-        return object.letter === chLetter;
+        return object.letter === chosenLetter;
     });
     if (filtered.length <= 0) {
         wrongTries++;
         changeHangmanImage();
+        addUsedLetter(chosenLetter);
     }
     console.log(filtered);
     winOrLoseCheck(checkedObjects);
     renderProgress(checkedObjects);
+};
+var addUsedLetter = function (chosenLetter) {
+    var hook = document.getElementById("container");
+    var usedLetter = document.createElement("p");
+    usedLetter.innerText = chosenLetter;
+    usedLetter.className = "container__used-letter";
+    hook.appendChild(usedLetter);
 };
 var checkWord = function (inputVal) {
     if (inputVal === word) {

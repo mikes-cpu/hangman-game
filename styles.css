@@ -69,4 +69,11 @@ html {
   -webkit-box-shadow: 0.5rem 0.5rem;
           box-shadow: 0.5rem 0.5rem;
 }
+
+#container .container__used-letter {
+  text-decoration: line-through;
+  text-align: center;
+  font-size: 2rem;
+  color: red;
+}
 /*# sourceMappingURL=styles.css.map */

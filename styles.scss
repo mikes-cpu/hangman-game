@@ -50,4 +50,10 @@ html {
     border-radius: 4px;
     box-shadow: 0.5rem 0.5rem;
   }
+  .container__used-letter {
+    text-decoration: line-through;
+    text-align: center;
+    font-size: 2rem;
+    color: red;
+  }
 }

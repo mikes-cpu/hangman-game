@@ -81,7 +81,7 @@ const initGame = () => {
 
 const letterSubmitHandler = () => {
   let input = (<HTMLInputElement>document.querySelector(".container__letterInput"))
-  let inputVal = input.value.toUpperCase();
+  let inputVal = input.value.toUpperCase().trim();
 
   if(!inputVal || inputVal.length > 1) {
     return alert("Invalid letter!")
@@ -93,7 +93,7 @@ const letterSubmitHandler = () => {
 
 const wordSubmitHandler = () => {
   let input = (<HTMLInputElement>document.querySelector(".container__wordInput"))
-  let inputVal = input.value.toUpperCase();
+  let inputVal = input.value.toUpperCase().trim();
 
   checkWord(inputVal);
 
@@ -145,27 +145,38 @@ const changeHangmanImage = () => {
   }
 }
 
-const checkLetter = (chLetter) => {
+const checkLetter = (chosenLetter) => {
   let checkedObjects = []
   wordObject.forEach((object) => {
-    if (object.letter === chLetter) {
+    if (object.letter === chosenLetter) {
       object.visable = true
     } 
     checkedObjects.push(object)
   })
 
   const filtered = wordObject.filter((object) => {
-    return object.letter === chLetter;
+    return object.letter === chosenLetter;
   })
 
   if (filtered.length <= 0) {
     wrongTries++;
     changeHangmanImage()
+    addUsedLetter(chosenLetter)
   }
 
   console.log(filtered)
   winOrLoseCheck(checkedObjects);
   renderProgress(checkedObjects)
+}
+
+const addUsedLetter = (chosenLetter) => {
+  const hook = document.getElementById("container");
+
+  const usedLetter = document.createElement("p")
+  usedLetter.innerText = chosenLetter;
+  usedLetter.className = "container__used-letter";
+
+  hook.appendChild(usedLetter)
 }
 
 const checkWord = (inputVal) => {
