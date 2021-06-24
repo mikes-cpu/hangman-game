@@ -2,10 +2,10 @@ var word = "";
 var wordArray = [];
 var randomiseWord = function () {
     if (Math.random() * 10 < 5) {
-        word = "pidgeon";
+        word = "PIDGEON";
     }
     else {
-        word = "gardening";
+        word = "GARDENING";
     }
     return word;
 };
@@ -65,7 +65,7 @@ var initGame = function () {
 };
 var letterSubmitHandler = function () {
     var input = document.querySelector(".container__letterInput");
-    var inputVal = input.value;
+    var inputVal = input.value.toUpperCase();
     if (!inputVal || inputVal.length > 1) {
         return alert("Invalid letter!");
     }
@@ -74,7 +74,7 @@ var letterSubmitHandler = function () {
 };
 var wordSubmitHandler = function () {
     var input = document.querySelector(".container__wordInput");
-    var inputVal = input.value;
+    var inputVal = input.value.toUpperCase();
     checkWord(inputVal);
     document.querySelector(".container__wordInput").value = '';
 };

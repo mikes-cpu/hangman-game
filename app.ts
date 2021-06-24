@@ -3,9 +3,9 @@ let wordArray = [];
 
 const randomiseWord = () => {
   if(Math.random() * 10 < 5) {
-    word = "pidgeon"
+    word = "PIDGEON"
   } else{
-    word = "gardening";
+    word = "GARDENING";
   }
   return word;
 }
@@ -81,7 +81,7 @@ const initGame = () => {
 
 const letterSubmitHandler = () => {
   let input = (<HTMLInputElement>document.querySelector(".container__letterInput"))
-  let inputVal = input.value;
+  let inputVal = input.value.toUpperCase();
 
   if(!inputVal || inputVal.length > 1) {
     return alert("Invalid letter!")
@@ -93,7 +93,7 @@ const letterSubmitHandler = () => {
 
 const wordSubmitHandler = () => {
   let input = (<HTMLInputElement>document.querySelector(".container__wordInput"))
-  let inputVal = input.value;
+  let inputVal = input.value.toUpperCase();
 
   checkWord(inputVal);
 
