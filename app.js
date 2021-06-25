@@ -1,4 +1,4 @@
-// global variables
+// global
 var word = "";
 var wordLetterArray = [];
 var WORDLETTEROBJECT = [];
@@ -15,9 +15,8 @@ var randomiseWord = function () {
 };
 wordLetterArray = Array.from(randomiseWord());
 var initWordLetterObject = function (array) {
-    array.forEach(function (letter, index) {
+    array.forEach(function (letter) {
         WORDLETTEROBJECT.push({
-            index: index,
             letter: letter,
             visable: false
         });
@@ -28,7 +27,6 @@ var buildDomElements = function () {
     var hook = document.getElementById("container");
     hook.innerHTML = "";
     var letterInput = document.createElement("input");
-    letterInput.name = "letter";
     letterInput.placeholder = "'a'";
     letterInput.className = "container__letterInput";
     letterInput.type = "text";
@@ -38,7 +36,6 @@ var buildDomElements = function () {
     var word = document.createElement("p");
     word.className = "container__word";
     var wordInput = document.createElement("input");
-    wordInput.name = "word";
     wordInput.placeholder = "'Hippo'";
     wordInput.className = "container__wordInput";
     wordInput.type = "text";

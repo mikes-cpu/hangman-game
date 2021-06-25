@@ -1,4 +1,4 @@
-// global variables
+// global
 let word = "";
 let wordLetterArray = [];
 const WORDLETTEROBJECT = [];
@@ -18,9 +18,8 @@ wordLetterArray = Array.from(randomiseWord());
 
 
 const initWordLetterObject = (array) => {
-  array.forEach((letter, index) => {
+  array.forEach((letter) => {
     WORDLETTEROBJECT.push({
-      index: index,
       letter: letter,
       visable: false,
     })
@@ -35,7 +34,6 @@ const buildDomElements = () => {
   hook.innerHTML = "";
 
   const letterInput = document.createElement("input")
-  letterInput.name = "letter";
   letterInput.placeholder = "'a'"
   letterInput.className = "container__letterInput"
   letterInput.type = "text";
@@ -48,7 +46,6 @@ const buildDomElements = () => {
   word.className = "container__word"
 
   const wordInput = document.createElement("input")
-  wordInput.name = "word";
   wordInput.placeholder = "'Hippo'"
   wordInput.className = "container__wordInput"
   wordInput.type = "text";
