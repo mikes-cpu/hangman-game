@@ -200,8 +200,6 @@ const checkWord = (inputVal) => {
 }
 
 const addGuessToDom = (guess) => {
-  const hook = document.getElementById("container");
-
   const guessContainer = (<HTMLInputElement>document.querySelector(".container__guess-container"))
 
   const guessHeader = (<HTMLInputElement>document.querySelector(".container__guess-header"))

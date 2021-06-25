@@ -15,6 +15,9 @@ html {
 #container .container__hangman-img-container {
   width: 30rem;
   margin: 6rem auto 0;
+  border: 1px solid #d1d1d1;
+  border-radius: 1rem;
+  padding: 2rem;
 }
 
 #container .container__hangman-img-container .hangman-img-container__img {

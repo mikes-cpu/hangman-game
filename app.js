@@ -165,7 +165,6 @@ var checkWord = function (inputVal) {
     }
 };
 var addGuessToDom = function (guess) {
-    var hook = document.getElementById("container");
     var guessContainer = document.querySelector(".container__guess-container");
     var guessHeader = document.querySelector(".container__guess-header");
     guessHeader.innerText = "Guesses";
