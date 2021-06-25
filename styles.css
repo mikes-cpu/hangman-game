@@ -12,11 +12,6 @@ html {
           flex-direction: column;
 }
 
-#container .container__title {
-  text-align: center;
-  font-size: 3rem;
-}
-
 #container .container__hangman-img-container {
   width: 30rem;
   margin: 6rem auto 0;
@@ -70,10 +65,49 @@ html {
           box-shadow: 0.5rem 0.5rem;
 }
 
-#container .container__used-letter {
-  text-decoration: line-through;
+#container .container__guess-header {
+  margin-top: 3rem;
   text-align: center;
   font-size: 2rem;
+}
+
+#container .container__guess-container {
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: (1fr)[2];
+      grid-template-columns: repeat(2, 1fr);
+  width: 50%;
+  margin: auto;
+}
+
+#container .container__guess-container .guess-container-guess {
+  text-decoration: line-through;
+  text-align: center;
   color: red;
+  font-size: 2rem;
+  display: block;
+  margin: auto;
+  line-height: 3.5rem;
+}
+
+@media (max-width: 500px) {
+  #container .container__hangman-img-container {
+    width: 12rem;
+    margin: 2rem auto 0;
+  }
+  #container .container__word {
+    margin: 4rem auto 4rem;
+    font-size: 2rem;
+  }
+  #container .container__letterInput {
+    padding: 0.5rem 0.5rem;
+    font-size: 1.6rem;
+  }
+  #container .container__wordInput {
+    font-size: 1.6rem;
+  }
+  #container .container__guess-container .guess-container-guess {
+    font-size: 1.6rem;
+  }
 }
 /*# sourceMappingURL=styles.css.map */

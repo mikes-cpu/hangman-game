@@ -1,5 +1,9 @@
+// global variables
 var word = "";
-var wordArray = [];
+var wordLetterArray = [];
+var WORDLETTEROBJECT = [];
+var wrongTryCount = 0;
+// just to give a couple of example words
 var randomiseWord = function () {
     if (Math.random() * 10 < 5) {
         word = "PIDGEON";
@@ -9,25 +13,20 @@ var randomiseWord = function () {
     }
     return word;
 };
-wordArray = Array.from(randomiseWord());
-var wordObject = [];
-var wrongTries = 0;
-var initObject = function (array) {
+wordLetterArray = Array.from(randomiseWord());
+var initWordLetterObject = function (array) {
     array.forEach(function (letter, index) {
-        wordObject.push({
+        WORDLETTEROBJECT.push({
             index: index,
             letter: letter,
             visable: false
         });
     });
 };
-initObject(wordArray);
-var initGame = function () {
+initWordLetterObject(wordLetterArray);
+var buildDomElements = function () {
     var hook = document.getElementById("container");
     hook.innerHTML = "";
-    var title = document.createElement("h1");
-    title.innerText = "Hangman";
-    title.className = "container__title";
     var letterInput = document.createElement("input");
     letterInput.name = "letter";
     letterInput.placeholder = "'a'";
@@ -46,7 +45,11 @@ var initGame = function () {
     var wordButton = document.createElement("button");
     wordButton.innerText = "Submit";
     wordButton.className = "container__submitWordButton";
-    wordArray.forEach(function () {
+    var guessContainer = document.createElement("div");
+    guessContainer.className = "container__guess-container";
+    var guessHeader = document.createElement("h2");
+    guessHeader.className = "container__guess-header";
+    wordLetterArray.forEach(function () {
         word.innerText += "_ ";
     });
     var hangmanImgContainer = document.createElement("div");
@@ -54,7 +57,6 @@ var initGame = function () {
     var hangmanImg = document.createElement("img");
     hangmanImg.className = "hangman-img-container__img";
     hangmanImg.src = "./img/12 lives left.svg";
-    // hook.appendChild(title)
     hook.appendChild(hangmanImgContainer);
     hangmanImgContainer.appendChild(hangmanImg);
     hook.appendChild(word);
@@ -62,8 +64,10 @@ var initGame = function () {
     hook.appendChild(letterButton);
     hook.appendChild(wordInput);
     hook.appendChild(wordButton);
+    hook.appendChild(guessHeader);
+    hook.appendChild(guessContainer);
 };
-var letterSubmitHandler = function () {
+var letterInputHandler = function () {
     var input = document.querySelector(".container__letterInput");
     var inputVal = input.value.toUpperCase().trim();
     if (!inputVal || inputVal.length > 1) {
@@ -72,15 +76,18 @@ var letterSubmitHandler = function () {
     checkLetter(inputVal);
     document.querySelector(".container__letterInput").value = '';
 };
-var wordSubmitHandler = function () {
+var wordInputHandler = function () {
     var input = document.querySelector(".container__wordInput");
     var inputVal = input.value.toUpperCase().trim();
+    if (!inputVal) {
+        return alert("Invalid word!");
+    }
     checkWord(inputVal);
     document.querySelector(".container__wordInput").value = '';
 };
-var changeHangmanImage = function () {
+var hangmanImageChange = function () {
     var hangManImg = document.querySelector(".hangman-img-container__img");
-    switch (wrongTries) {
+    switch (wrongTryCount) {
         case 1:
             hangManImg.src = "./img/11 lives left.svg";
             break;
@@ -122,74 +129,78 @@ var changeHangmanImage = function () {
     }
 };
 var checkLetter = function (chosenLetter) {
-    var checkedObjects = [];
-    wordObject.forEach(function (object) {
+    var checkedWordLetterObject = [];
+    WORDLETTEROBJECT.forEach(function (object) {
         if (object.letter === chosenLetter) {
             object.visable = true;
         }
-        checkedObjects.push(object);
+        checkedWordLetterObject.push(object);
     });
-    var filtered = wordObject.filter(function (object) {
+    var filtered = WORDLETTEROBJECT.filter(function (object) {
         return object.letter === chosenLetter;
     });
+    // if no matches after checking users number
     if (filtered.length <= 0) {
-        wrongTries++;
-        changeHangmanImage();
-        addUsedLetter(chosenLetter);
+        wrongTryCount++;
+        hangmanImageChange();
+        addGuessToDom(chosenLetter);
     }
-    console.log(filtered);
-    winOrLoseCheck(checkedObjects);
-    renderProgress(checkedObjects);
-};
-var addUsedLetter = function (chosenLetter) {
-    var hook = document.getElementById("container");
-    var usedLetter = document.createElement("p");
-    usedLetter.innerText = chosenLetter;
-    usedLetter.className = "container__used-letter";
-    hook.appendChild(usedLetter);
+    // checks if user has won or lost on that guess
+    winOrLoseCheck(checkedWordLetterObject);
+    // if user guessed right the dom gets updated
+    renderProgress(checkedWordLetterObject);
 };
 var checkWord = function (inputVal) {
     if (inputVal === word) {
         alert("You win!");
-        wordObject.forEach(function (object) {
+        WORDLETTEROBJECT.forEach(function (object) {
             return object.visable = true;
         });
-        renderProgress(wordObject);
+        renderProgress(WORDLETTEROBJECT);
     }
     else {
-        wrongTries++;
-        changeHangmanImage();
+        wrongTryCount++;
+        hangmanImageChange();
+        addGuessToDom(inputVal);
     }
 };
-var winOrLoseCheck = function (checkedObjects) {
-    var filtered = checkedObjects.filter(function (object) {
+var addGuessToDom = function (guess) {
+    var hook = document.getElementById("container");
+    var guessContainer = document.querySelector(".container__guess-container");
+    var guessHeader = document.querySelector(".container__guess-header");
+    guessHeader.innerText = "Guesses";
+    var aGuess = document.createElement("p");
+    aGuess.innerText = guess;
+    aGuess.className = "guess-container-guess";
+    guessContainer.appendChild(aGuess);
+};
+var winOrLoseCheck = function (checkedWordLetterObject) {
+    var filtered = checkedWordLetterObject.filter(function (object) {
         return object.visable;
     });
-    if (filtered.length === wordObject.length) {
-        console.log(filtered.length);
-        console.log(wordObject.length);
+    if (filtered.length === WORDLETTEROBJECT.length) {
         alert("You win");
     }
-    if (wrongTries > 11) {
+    if (wrongTryCount > 11) {
         alert("You loose!");
     }
 };
 var renderProgress = function (objects) {
     var word = document.querySelector(".container__word");
-    var renderedVersion = "";
+    var renderedWord = "";
     objects.forEach(function (object) {
         if (object.visable) {
-            renderedVersion += object.letter + " ";
+            renderedWord += object.letter + " ";
         }
         else {
-            renderedVersion += "_ ";
+            renderedWord += "_ ";
         }
     });
-    word.innerText = renderedVersion;
-    console.log(renderedVersion);
+    word.innerText = renderedWord;
+    console.log(renderedWord);
 };
-initGame();
+buildDomElements();
 var submitLetterButton = document.querySelector(".container__submitLetterButton");
 var submitWordButton = document.querySelector(".container__submitWordButton");
-submitLetterButton.addEventListener('click', letterSubmitHandler);
-submitWordButton.addEventListener('click', wordSubmitHandler);
+submitLetterButton.addEventListener('click', letterInputHandler);
+submitWordButton.addEventListener('click', wordInputHandler);

@@ -1,6 +1,11 @@
+// global variables
 let word = "";
-let wordArray = [];
+let wordLetterArray = [];
+const WORDLETTEROBJECT = [];
+let wrongTryCount = 0;
 
+
+// just to give a couple of example words
 const randomiseWord = () => {
   if(Math.random() * 10 < 5) {
     word = "PIDGEON"
@@ -9,14 +14,12 @@ const randomiseWord = () => {
   }
   return word;
 }
+wordLetterArray = Array.from(randomiseWord());
 
-wordArray = Array.from(randomiseWord());
-const wordObject = [];
-let wrongTries = 0;
 
-const initObject = (array) => {
+const initWordLetterObject = (array) => {
   array.forEach((letter, index) => {
-    wordObject.push({
+    WORDLETTEROBJECT.push({
       index: index,
       letter: letter,
       visable: false,
@@ -24,16 +27,12 @@ const initObject = (array) => {
   })
 }
 
-initObject(wordArray)
+initWordLetterObject(wordLetterArray)
 
 
-const initGame = () => {
+const buildDomElements = () => {
   const hook = document.getElementById("container");
   hook.innerHTML = "";
-
-  const title = document.createElement("h1")
-  title.innerText = "Hangman"
-  title.className = "container__title"
 
   const letterInput = document.createElement("input")
   letterInput.name = "letter";
@@ -58,7 +57,13 @@ const initGame = () => {
   wordButton.innerText = "Submit"
   wordButton.className = "container__submitWordButton"
 
-  wordArray.forEach(() => {
+  const guessContainer = document.createElement("div")
+  guessContainer.className = "container__guess-container"
+
+  const guessHeader = document.createElement("h2")
+  guessHeader.className = "container__guess-header"
+
+  wordLetterArray.forEach(() => {
     word.innerText += "_ "
   })
 
@@ -68,8 +73,6 @@ const initGame = () => {
   hangmanImg.className = "hangman-img-container__img"
   hangmanImg.src = "./img/12 lives left.svg"
 
-
-  // hook.appendChild(title)
   hook.appendChild(hangmanImgContainer)
   hangmanImgContainer.appendChild(hangmanImg)
   hook.appendChild(word)
@@ -77,9 +80,12 @@ const initGame = () => {
   hook.appendChild(letterButton)
   hook.appendChild(wordInput)
   hook.appendChild(wordButton)
+  hook.appendChild(guessHeader)
+  hook.appendChild(guessContainer)
 }
 
-const letterSubmitHandler = () => {
+
+const letterInputHandler = () => {
   let input = (<HTMLInputElement>document.querySelector(".container__letterInput"))
   let inputVal = input.value.toUpperCase().trim();
 
@@ -91,19 +97,24 @@ const letterSubmitHandler = () => {
   (<HTMLInputElement>document.querySelector(".container__letterInput")).value = ''
 }
 
-const wordSubmitHandler = () => {
+
+const wordInputHandler = () => {
   let input = (<HTMLInputElement>document.querySelector(".container__wordInput"))
   let inputVal = input.value.toUpperCase().trim();
 
+  if(!inputVal) {
+    return alert("Invalid word!")
+  } 
   checkWord(inputVal);
 
   (<HTMLInputElement>document.querySelector(".container__wordInput")).value = ''
 }
 
-const changeHangmanImage = () => {
+
+const hangmanImageChange = () => {
   const hangManImg = (<HTMLInputElement>document.querySelector(".hangman-img-container__img"))
     
-  switch (wrongTries) {
+  switch (wrongTryCount) {
     case 1: 
       hangManImg.src = "./img/11 lives left.svg"
       break;
@@ -146,89 +157,99 @@ const changeHangmanImage = () => {
 }
 
 const checkLetter = (chosenLetter) => {
-  let checkedObjects = []
-  wordObject.forEach((object) => {
+  let checkedWordLetterObject = []
+
+  WORDLETTEROBJECT.forEach((object) => {
     if (object.letter === chosenLetter) {
       object.visable = true
     } 
-    checkedObjects.push(object)
+    checkedWordLetterObject.push(object)
   })
 
-  const filtered = wordObject.filter((object) => {
+  const filtered = WORDLETTEROBJECT.filter((object) => {
     return object.letter === chosenLetter;
   })
 
+  // if no matches after checking users number
   if (filtered.length <= 0) {
-    wrongTries++;
-    changeHangmanImage()
-    addUsedLetter(chosenLetter)
+    wrongTryCount++;
+    hangmanImageChange()
+    addGuessToDom(chosenLetter)
   }
 
-  console.log(filtered)
-  winOrLoseCheck(checkedObjects);
-  renderProgress(checkedObjects)
+  // checks if user has won or lost on that guess
+  winOrLoseCheck(checkedWordLetterObject);
+
+  // if user guessed right the dom gets updated
+  renderProgress(checkedWordLetterObject);
 }
 
-const addUsedLetter = (chosenLetter) => {
-  const hook = document.getElementById("container");
-
-  const usedLetter = document.createElement("p")
-  usedLetter.innerText = chosenLetter;
-  usedLetter.className = "container__used-letter";
-
-  hook.appendChild(usedLetter)
-}
 
 const checkWord = (inputVal) => {
   if(inputVal === word) {
     alert("You win!")
-    wordObject.forEach((object) => {
+    WORDLETTEROBJECT.forEach((object) => {
       return object.visable = true;
     })
-
-    renderProgress(wordObject)
+    renderProgress(WORDLETTEROBJECT)
   } else {
-    wrongTries++
-    changeHangmanImage()
+    wrongTryCount++
+    hangmanImageChange()
+    addGuessToDom(inputVal)
   }
 }
 
-const winOrLoseCheck = (checkedObjects) => {
-  const filtered = checkedObjects.filter((object) => {
+const addGuessToDom = (guess) => {
+  const hook = document.getElementById("container");
+
+  const guessContainer = (<HTMLInputElement>document.querySelector(".container__guess-container"))
+
+  const guessHeader = (<HTMLInputElement>document.querySelector(".container__guess-header"))
+  guessHeader.innerText = "Guesses"
+
+  const aGuess = document.createElement("p")
+  aGuess.innerText = guess;
+  aGuess.className = "guess-container-guess";
+
+  guessContainer.appendChild(aGuess)
+}
+
+
+const winOrLoseCheck = (checkedWordLetterObject) => {
+  const filtered = checkedWordLetterObject.filter((object) => {
     return object.visable;
   })  
 
-  if(filtered.length === wordObject.length) {
-    console.log(filtered.length)
-    console.log(wordObject.length)
+  if(filtered.length === WORDLETTEROBJECT.length) {
     alert("You win")
   }
 
-  if(wrongTries > 11) {
+  if(wrongTryCount > 11) {
     alert("You loose!")
   }
 }
 
+
 const renderProgress = (objects) => {
   const word = (<HTMLInputElement>document.querySelector(".container__word"));
-  let renderedVersion = "";
+  let renderedWord = "";
   objects.forEach((object) => {
     if(object.visable) {
-      renderedVersion += `${object.letter} `
+      renderedWord += `${object.letter} `
     } else {
-      renderedVersion += "_ "
+      renderedWord += "_ "
     }
   })
-  word.innerText = renderedVersion;
-  console.log(renderedVersion)
+  word.innerText = renderedWord;
+  console.log(renderedWord)
 }
 
-initGame()
 
+buildDomElements()
 
 
 const submitLetterButton = document.querySelector(".container__submitLetterButton")
 const submitWordButton = document.querySelector(".container__submitWordButton")
 
-submitLetterButton.addEventListener('click', letterSubmitHandler)
-submitWordButton.addEventListener('click', wordSubmitHandler)
+submitLetterButton.addEventListener('click', letterInputHandler)
+submitWordButton.addEventListener('click', wordInputHandler)

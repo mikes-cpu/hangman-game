@@ -5,10 +5,6 @@ html {
 #container {
   display: flex;
   flex-direction: column;
-  .container__title {
-    text-align: center;
-    font-size: 3rem;
-  }
   .container__hangman-img-container {
     width: 30rem;
     margin: 6rem auto 0;
@@ -50,10 +46,50 @@ html {
     border-radius: 4px;
     box-shadow: 0.5rem 0.5rem;
   }
-  .container__used-letter {
-    text-decoration: line-through;
+  .container__guess-header {
+    margin-top: 3rem;
     text-align: center;
     font-size: 2rem;
-    color: red;
+  }
+  .container__guess-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    width: 50%;
+    margin: auto;
+    .guess-container-guess {
+      text-decoration: line-through;
+      text-align: center;
+      color: red;
+      font-size: 2rem;
+      display: block;
+      margin: auto;
+      line-height: 3.5rem;
+    }
+  }
+}
+
+// Mobile Phone
+@media (max-width: 500px) {
+  #container {
+    .container__hangman-img-container {
+      width: 12rem;
+      margin: 2rem auto 0;
+    }
+    .container__word {
+      margin: 4rem auto 4rem;
+      font-size: 2rem;
+    }
+    .container__letterInput {
+      padding: 0.5rem 0.5rem;
+      font-size: 1.6rem;
+    }
+    .container__wordInput {
+      font-size: 1.6rem;
+    }
+    .container__guess-container {
+      .guess-container-guess {
+        font-size: 1.6rem;
+      }
+    }
   }
 }
